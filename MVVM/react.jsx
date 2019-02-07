@@ -11,8 +11,12 @@ MVVM.ViewModel =function(vmObj){
   this.vmData=vmObj.data;
 
   this.init=()=>{
-    
-    ReactDOM.render(<View renderData={this.vmData} increase={methods.add.bind(this)} decrease={methods.sub.bind(this)} register={this.register}/>, document.querySelector("#app"));
+    ReactDOM.render(
+      <View renderData={MVVM.Model} 
+            increase={methods.add} 
+            decrease={methods.sub} 
+            register={this.register}/>, 
+      document.querySelector("#app"));
     this.observe(this.vmData);
   }
 
@@ -62,23 +66,18 @@ class View extends React.Component {
     this.state = {
     	curVal: this.props.renderData.val
     }
-    this.btnClick = (type)=>{
-      this.props.register(this);
-      if(type === 'add'){
-        this.props.increase();
-      }else{
-        this.props.decrease();
-      }
-    }
-    
+  }
+  
+  componentDidMount(){
+  	this.props.register(this);
   }
  
   render() {
     return (
       <div>
       <p>MVVM Current Value:{this.state.curVal}</p>
-      <button onClick={this.btnClick.bind(this,'add')}>Click Add</button>
-      <button onClick={this.btnClick.bind(this,'sub')}>Click Sub</button>
+      <button onClick={this.props.increase.bind(this)}>Click Add</button>
+      <button onClick={this.props.decrease.bind(this)}>Click Sub</button>
       </div>
     )
   }
@@ -89,10 +88,10 @@ var vm= new MVVM.ViewModel({
   data:MVVM.Model,
   methods:{
       add: function() {
-        this.vmData.val<100 && this.vmData.val++;
+        MVVM.Model.val<100 && MVVM.Model.val++;
     },
       sub: function(){
-        this.vmData.val>0 && this.vmData.val--;
+        MVVM.Model.val>0 && MVVM.Model.val--;
     }
   }
 });
